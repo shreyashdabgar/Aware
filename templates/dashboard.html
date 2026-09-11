@@ -1,0 +1,409 @@
+{% extends "index.html" %}
+
+{% block title %}Student Dashboard — Aura Mentorship{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1rem 0 3rem;
+    }
+
+    /* Welcome Header Banner */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2.25rem 2.5rem;
+        background: var(--bg-card, rgba(28, 37, 65, 0.65));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+        border-radius: var(--radius-lg, 20px);
+        box-shadow: var(--shadow-subtle, 0 10px 30px rgba(0, 0, 0, 0.35));
+    }
+
+    .welcome-text h1 {
+        font-family: var(--font-serif, 'Newsreader', Georgia, serif);
+        font-size: clamp(1.8rem, 3vw, 2.4rem);
+        color: var(--text-main, #F4F7FC);
+        margin-bottom: 0.35rem;
+    }
+
+    .welcome-text p {
+        color: var(--text-sub, #A0AEC0);
+        font-size: 0.95rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.85rem;
+    }
+
+    /* Primary Action Buttons */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: var(--radius-md, 12px);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--academic-blue, #3A86FF);
+        color: #FFFFFF;
+        box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: #2563EB;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(58, 134, 255, 0.45);
+    }
+
+    .btn-secondary {
+        background: rgba(11, 19, 43, 0.6);
+        color: var(--text-main, #F4F7FC);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+    }
+
+    .btn-secondary:hover {
+        background: rgba(28, 37, 65, 0.85);
+        border-color: var(--academic-blue, #3A86FF);
+    }
+
+    /* Metric Analytics Cards */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .metric-card {
+        padding: 1.5rem;
+        background: var(--bg-card, rgba(28, 37, 65, 0.65));
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+        border-radius: var(--radius-md, 12px);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .metric-title {
+        font-size: 0.85rem;
+        color: var(--text-sub, #A0AEC0);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-main, #F4F7FC);
+        font-family: var(--font-sans);
+    }
+
+    .metric-change {
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .change-positive { color: var(--growth-green, #06D6A0); }
+    .change-neutral { color: var(--focus-amber, #FFB703); }
+
+    /* Main Dashboard Layout Split */
+    .dashboard-layout {
+        display: grid;
+        grid-template-columns: 1.8fr 1.2fr;
+        gap: 1.5rem;
+    }
+
+    .section-card {
+        padding: 1.75rem;
+        background: var(--bg-card, rgba(28, 37, 65, 0.65));
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+        border-radius: var(--radius-lg, 20px);
+        backdrop-filter: blur(16px);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-family: var(--font-serif, 'Newsreader', Georgia, serif);
+        font-size: 1.35rem;
+        color: var(--text-main, #F4F7FC);
+    }
+
+    /* Sessions List */
+    .sessions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .session-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 1.25rem;
+        background: rgba(11, 19, 43, 0.5);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+        border-radius: var(--radius-md, 12px);
+        transition: border-color 0.25s ease;
+    }
+
+    .session-item:hover {
+        border-color: rgba(58, 134, 255, 0.3);
+    }
+
+    .tutor-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--academic-blue), var(--growth-green));
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: #FFFFFF;
+        font-size: 0.95rem;
+    }
+
+    .session-details h4 {
+        color: var(--text-main, #F4F7FC);
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+    }
+
+    .session-details p {
+        color: var(--text-sub, #A0AEC0);
+        font-size: 0.825rem;
+    }
+
+    /* Progress Items */
+    .progress-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .progress-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+    }
+
+    .subject-name {
+        color: var(--text-main, #F4F7FC);
+        font-weight: 500;
+    }
+
+    .progress-percentage {
+        color: var(--growth-green, #06D6A0);
+        font-weight: 600;
+    }
+
+    .progress-bar-bg {
+        width: 100%;
+        height: 8px;
+        background: rgba(11, 19, 43, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--academic-blue), var(--growth-green));
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+
+    @media (max-width: 900px) {
+        .dashboard-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.25rem;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .btn-action {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    
+    <!-- Top Greeting Banner -->
+    <header class="dashboard-header">
+        <div class="welcome-text">
+            <h1>Welcome back, {{ current_user.name or "Alex" }}</h1>
+            <p>Your academic mentorship progress and scheduled tutoring sessions.</p>
+        </div>
+        <div class="header-actions">
+            <a href="#" class="btn-action btn-secondary">Find a Tutor</a>
+            <a href="#" class="btn-action btn-primary">+ Schedule Session</a>
+        </div>
+    </header>
+
+    <!-- Key Metrics Grid -->
+    <section class="metrics-grid">
+        <div class="metric-card">
+            <span class="metric-title">Mentorship Hours</span>
+            <span class="metric-value">24.5</span>
+            <span class="metric-change change-positive">↑ 3.2 hrs this week</span>
+        </div>
+        
+        <div class="metric-card">
+            <span class="metric-title">Active Tutors</span>
+            <span class="metric-value">3</span>
+            <span class="metric-change change-neutral">Mathematics, Physics & CS</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-title">Completed Lessons</span>
+            <span class="metric-value">18</span>
+            <span class="metric-change change-positive">100% Attendance Rate</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-title">Academic Goal</span>
+            <span class="metric-value">88%</span>
+            <span class="metric-change change-positive">↑ 5% boost in test scores</span>
+        </div>
+    </section>
+
+    <!-- Main Content Grid Split -->
+    <div class="dashboard-layout">
+        
+        <!-- Left Column: Upcoming Sessions -->
+        <section class="section-card">
+            <div class="section-header">
+                <h3 class="section-title">Upcoming Mentorship Sessions</h3>
+                <span class="academic-badge green">2 Scheduled Today</span>
+            </div>
+
+            <div class="sessions-list">
+                <!-- Session 1 -->
+                <div class="session-item">
+                    <div class="tutor-info">
+                        <div class="avatar">DR</div>
+                        <div class="session-details">
+                            <h4>Advanced Calculus & Linear Algebra</h4>
+                            <p>Dr. Rachel Vance &bull; Today at 4:00 PM (45 mins)</p>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-action btn-primary" style="padding: 0.5rem 0.9rem; font-size: 0.825rem;">Join Class</a>
+                </div>
+
+                <!-- Session 2 -->
+                <div class="session-item">
+                    <div class="tutor-info">
+                        <div class="avatar" style="background: linear-gradient(135deg, #FFB703, #3A86FF);">MK</div>
+                        <div class="session-details">
+                            <h4>Quantum Mechanics Fundamentals</h4>
+                            <p>Prof. Marcus Kane &bull; Today at 6:30 PM (60 mins)</p>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-action btn-secondary" style="padding: 0.5rem 0.9rem; font-size: 0.825rem;">Prepared</a>
+                </div>
+
+                <!-- Session 3 -->
+                <div class="session-item">
+                    <div class="tutor-info">
+                        <div class="avatar" style="background: linear-gradient(135deg, #06D6A0, #118AB2);">EL</div>
+                        <div class="session-details">
+                            <h4>Data Structures & Algorithms</h4>
+                            <p>Elena Rostova &bull; Tomorrow at 2:00 PM</p>
+                        </div>
+                    </div>
+                    <span class="academic-badge amber">Tomorrow</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Subject Mastery & Progress -->
+        <section class="section-card">
+            <div class="section-header">
+                <h3 class="section-title">Subject Mastery</h3>
+                <a href="#" style="color: var(--academic-blue); text-decoration: none; font-size: 0.85rem; font-weight: 500;">View Syllabus</a>
+            </div>
+
+            <div class="progress-list">
+                <!-- Progress Bar 1 -->
+                <div class="progress-item">
+                    <div class="progress-info">
+                        <span class="subject-name">Higher Mathematics</span>
+                        <span class="progress-percentage">82%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 82%;"></div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar 2 -->
+                <div class="progress-item">
+                    <div class="progress-info">
+                        <span class="subject-name">Theoretical Physics</span>
+                        <span class="progress-percentage">68%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 68%;"></div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar 3 -->
+                <div class="progress-item">
+                    <div class="progress-info">
+                        <span class="subject-name">Computer Science & AI</span>
+                        <span class="progress-percentage">94%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 94%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+{% endblock %}

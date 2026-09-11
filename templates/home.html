@@ -1,0 +1,232 @@
+{% extends "index.html" %}
+
+{% block content %}
+<style>
+    /* Navigation Bar styling */
+    .home-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.85rem 1.5rem;
+        background: var(--surface-glass, rgba(18, 20, 38, 0.65));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: var(--radius-lg, 20px);
+        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        margin-bottom: 2.5rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .home-header:hover {
+        border-color: var(--border-hover, rgba(243, 229, 171, 0.25));
+    }
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary, #F8FAFC);
+        text-decoration: none;
+        letter-spacing: -0.01em;
+    }
+
+    .brand-icon {
+        color: var(--gold-champagne, #F3E5AB);
+        font-size: 1.3rem;
+    }
+
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1.35rem;
+        border-radius: var(--radius-md, 12px);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: pointer;
+    }
+
+    /* Subdued Secondary Action */
+    .btn-login {
+        color: var(--text-primary, #F8FAFC);
+        background: transparent;
+        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.15));
+    }
+
+    .btn-login:hover {
+        color: #ffffff;
+        background: rgba(243, 229, 171, 0.08);
+        border-color: var(--gold-champagne, #F3E5AB);
+    }
+
+    /* Primary Luxury Button */
+    .btn-register {
+        color: #070913;
+        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
+        border: 1px solid transparent;
+        box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(212, 175, 55, 0.4);
+        filter: brightness(1.08);
+    }
+
+    /* Red Destructive Action for Logout */
+    .btn-logout {
+        color: #fecdd3;
+        background: rgba(225, 29, 72, 0.12);
+        border: 1px solid rgba(251, 113, 133, 0.3);
+    }
+
+    .btn-logout:hover {
+        color: #ffffff;
+        background: rgba(225, 29, 72, 0.85);
+        border-color: rgba(251, 113, 133, 0.6);
+        box-shadow: 0 0 20px rgba(225, 29, 72, 0.4);
+        transform: translateY(-1px);
+    }
+
+    .btn-register:active,
+    .btn-login:active,
+    .btn-logout:active {
+        transform: translateY(0);
+    }
+
+    /* Hero Section */
+    .hero-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 5rem 1rem;
+        min-height: calc(100vh - 240px);
+    }
+
+    .hero-title {
+        font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+        font-size: clamp(2.8rem, 6vw, 4.8rem);
+        font-weight: 600;
+        line-height: 1.15;
+        margin-bottom: 1.25rem;
+        color: var(--text-primary, #F8FAFC);
+        letter-spacing: -0.01em;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: var(--text-muted, #94A3B8);
+        max-width: 620px;
+        line-height: 1.75;
+        margin-bottom: 2.5rem;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1.25rem;
+        align-items: center;
+    }
+
+    .hero-btn-lg {
+        padding: 0.9rem 2.2rem;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 600px) {
+        .home-header {
+            padding: 0.65rem 1rem;
+        }
+
+        .brand-logo span:last-child {
+            display: none;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .hero-btn-lg {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<!-- Navigation Header -->
+<header class="home-header">
+
+    <a href="{{ url_for('home') }}" class="brand-logo">
+        <span class="brand-icon">✦</span>
+        <span>Awareness</span>
+    </a>
+
+    <nav class="nav-actions">
+
+        {% if session.get('user_id') %}
+            <a href="{{ url_for('auth.logout') }}"
+               class="nav-btn btn-logout">
+                Log Out
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}"
+               class="nav-btn btn-login">
+                Log In
+            </a>
+
+            <a href="{{ url_for('auth.register') }}"
+               class="nav-btn btn-register">
+                Register
+            </a>
+        {% endif %}
+
+    </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="hero-container">
+
+    <h1 class="hero-title">
+        Awareness with <span class="gold-text">Clarity.</span>
+    </h1>
+
+    <p class="hero-subtitle">
+        Understand and gain deep academic insights within seconds. Elevate your mastery while saving valuable time.
+    </p>
+
+    <div class="hero-buttons">
+
+        {% if session.get('user_id') %}
+            <a href="#" class="nav-btn btn-register hero-btn-lg">
+                Go to Dashboard &rarr;
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}"
+               class="nav-btn btn-register hero-btn-lg">
+                Get Started &rarr;
+            </a>
+
+            <a href="{{ url_for('auth.login') }}"
+               class="nav-btn btn-login hero-btn-lg">
+                Sign In
+            </a>
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

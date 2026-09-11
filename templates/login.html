@@ -1,0 +1,260 @@
+{% extends "index.html" %}
+
+{% block content %}
+<style>
+    .login-page {
+        min-height: calc(100vh - 128px);
+        display: grid;
+        place-items: center;
+        padding: 2rem 1rem;
+    }
+
+    .login-card {
+        width: min(100%, 960px);
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        overflow: hidden;
+        border-radius: var(--radius-lg, 24px);
+        background: var(--surface-glass, rgba(18, 20, 38, 0.65));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        box-shadow: 
+            0 30px 60px -12px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .login-card:hover {
+        border-color: var(--border-hover, rgba(243, 229, 171, 0.35));
+        box-shadow: 
+            0 35px 70px -15px rgba(0, 0, 0, 0.6),
+            0 0 30px var(--glow-gold, rgba(212, 175, 55, 0.15));
+    }
+
+    /* Left Branding Banner */
+    .login-intro {
+        padding: 3.5rem 2.5rem;
+        color: var(--text-primary, #F8FAFC);
+        background: linear-gradient(145deg, rgba(18, 20, 38, 0.95), rgba(30, 27, 75, 0.75));
+        border-right: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .intro-icon {
+        font-size: 1.8rem;
+        color: var(--gold-champagne, #F3E5AB);
+        margin-bottom: 0.5rem;
+    }
+
+    .login-intro h1 {
+        margin: 0.75rem 0 1rem;
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        line-height: 1.2;
+        font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+        font-weight: 600;
+    }
+
+    .login-intro p {
+        color: var(--text-muted, #94A3B8);
+        line-height: 1.7;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Right Form Container */
+    .login-form {
+        padding: 3.5rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .login-form h2 {
+        margin: 0 0 0.45rem;
+        color: var(--text-primary, #F8FAFC);
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    }
+
+    .subtitle {
+        margin: 0 0 2rem;
+        color: var(--text-muted, #94A3B8);
+        font-size: 0.925rem;
+    }
+
+    .field {
+        margin-bottom: 1.25rem;
+    }
+
+    .field label {
+        display: block;
+        margin-bottom: 0.45rem;
+        color: var(--text-primary, #F8FAFC);
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .field input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.15));
+        border-radius: var(--radius-md, 12px);
+        outline: none;
+        color: var(--text-primary, #F8FAFC);
+        background: rgba(7, 9, 19, 0.6);
+        transition: all 0.25s ease;
+        font-family: inherit;
+    }
+
+    .field input::placeholder {
+        color: #475569;
+    }
+
+    .field input:focus {
+        border-color: var(--gold-champagne, #F3E5AB);
+        box-shadow: 0 0 0 3px rgba(243, 229, 171, 0.15);
+        background: rgba(7, 9, 19, 0.85);
+    }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0.75rem 0 1.75rem;
+        font-size: 0.85rem;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted, #94A3B8);
+        cursor: pointer;
+    }
+
+    .remember-me input {
+        accent-color: var(--gold-muted, #D4AF37);
+        cursor: pointer;
+    }
+
+    .forgot-link {
+        color: var(--gold-champagne, #F3E5AB);
+        font-weight: 500;
+        text-decoration: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .forgot-link:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    /* Luxury Submit Button */
+    .submit-button {
+        width: 100%;
+        padding: 0.95rem;
+        border: 0;
+        border-radius: var(--radius-md, 12px);
+        color: #070913;
+        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
+        font-weight: 700;
+        font-size: 0.95rem;
+        font-family: inherit;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+        filter: brightness(1.08);
+    }
+
+    .submit-button:active {
+        transform: translateY(0);
+    }
+
+    /* Footer Register Prompt */
+    .register-link {
+        margin: 1.75rem 0 0;
+        text-align: center;
+        color: var(--text-muted, #94A3B8);
+        font-size: 0.9rem;
+    }
+
+    .register-link a {
+        color: var(--gold-champagne, #F3E5AB);
+        font-weight: 600;
+        text-decoration: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .register-link a:hover {
+        opacity: 0.85;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .login-card {
+            grid-template-columns: 1fr;
+        }
+        .login-intro {
+            padding: 2.5rem 1.75rem;
+            border-right: none;
+            border-bottom: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        }
+        .login-form {
+            padding: 2.25rem 1.5rem;
+        }
+    }
+</style>
+
+<main class="login-page">
+    <section class="login-card" aria-label="Sign in to your account">
+        <div class="login-intro">
+            <div class="intro-icon">✦</div>
+            <h1>Welcome back.</h1>
+            <p>Access your personalized dashboard, connect with elite tutors, and resume your academic journey.</p>
+        </div>
+        <div class="login-form">
+            <h2>Sign in</h2>
+            <p class="subtitle">Please enter your credentials to access your account.</p>
+            
+            <form method="post" action="">
+                
+                <div class="field">
+                    <label for="email">Email address</label>
+                    <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember_me">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button class="submit-button" type="submit">Sign in &rarr;</button>
+            </form>
+
+            <div class="register-link">
+                Don't have an account? 
+                <a href="{{ url_for('auth.register') }}">Get Started</a>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

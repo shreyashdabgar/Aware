@@ -1,0 +1,246 @@
+{% extends "index.html" %}
+
+{% block content %}
+<style>
+    .register-page {
+        min-height: calc(100vh - 128px);
+        display: grid;
+        place-items: center;
+        padding: 2rem 1rem;
+    }
+
+    .register-card {
+        width: min(100%, 960px);
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        overflow: hidden;
+        border-radius: var(--radius-lg, 24px);
+        background: var(--surface-glass, rgba(18, 20, 38, 0.65));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        box-shadow: 
+            0 30px 60px -12px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .register-card:hover {
+        border-color: var(--border-hover, rgba(243, 229, 171, 0.35));
+        box-shadow: 
+            0 35px 70px -15px rgba(0, 0, 0, 0.6),
+            0 0 30px var(--glow-gold, rgba(212, 175, 55, 0.15));
+    }
+
+    /* Left Branding Banner */
+    .register-intro {
+        padding: 3.5rem 2.5rem;
+        color: var(--text-primary, #F8FAFC);
+        background: linear-gradient(145deg, rgba(18, 20, 38, 0.95), rgba(30, 27, 75, 0.75));
+        border-right: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .intro-icon {
+        font-size: 1.8rem;
+        color: var(--gold-champagne, #F3E5AB);
+        margin-bottom: 0.5rem;
+    }
+
+    .register-intro h1 {
+        margin: 0.75rem 0 1rem;
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        line-height: 1.2;
+        font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+        font-weight: 600;
+    }
+
+    .register-intro p {
+        color: var(--text-muted, #94A3B8);
+        line-height: 1.7;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Right Form Container */
+    .register-form {
+        padding: 3.5rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .register-form h2 {
+        margin: 0 0 0.45rem;
+        color: var(--text-primary, #F8FAFC);
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    }
+
+    .subtitle {
+        margin: 0 0 2rem;
+        color: var(--text-muted, #94A3B8);
+        font-size: 0.925rem;
+    }
+
+    .field {
+        margin-bottom: 1.25rem;
+    }
+
+    .field label {
+        display: block;
+        margin-bottom: 0.45rem;
+        color: var(--text-primary, #F8FAFC);
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .field input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.15));
+        border-radius: var(--radius-md, 12px);
+        outline: none;
+        color: var(--text-primary, #F8FAFC);
+        background: rgba(7, 9, 19, 0.6);
+        transition: all 0.25s ease;
+        font-family: inherit;
+    }
+
+    .field input::placeholder {
+        color: #475569;
+    }
+
+    .field input:focus {
+        border-color: var(--gold-champagne, #F3E5AB);
+        box-shadow: 0 0 0 3px rgba(243, 229, 171, 0.15);
+        background: rgba(7, 9, 19, 0.85);
+    }
+
+    /* Terms and Conditions Checkbox */
+    .terms {
+        display: flex;
+        gap: 0.65rem;
+        align-items: flex-start;
+        margin: 0.75rem 0 1.75rem;
+        color: var(--text-muted, #94A3B8);
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .terms input {
+        margin-top: 0.2rem;
+        accent-color: var(--gold-muted, #D4AF37);
+        cursor: pointer;
+    }
+
+    .terms a, .login-link a {
+        color: var(--gold-champagne, #F3E5AB);
+        font-weight: 500;
+        text-decoration: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .terms a:hover, .login-link a:hover {
+        opacity: 0.85;
+        text-decoration: underline;
+    }
+
+    /* Luxury Submit Button */
+    .submit-button {
+        width: 100%;
+        padding: 0.95rem;
+        border: 0;
+        border-radius: var(--radius-md, 12px);
+        color: #070913;
+        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
+        font-weight: 700;
+        font-size: 0.95rem;
+        font-family: inherit;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+        filter: brightness(1.08);
+    }
+
+    .submit-button:active {
+        transform: translateY(0);
+    }
+
+    /* Footer Login Prompt */
+    .login-link {
+        margin: 1.75rem 0 0;
+        text-align: center;
+        color: var(--text-muted, #94A3B8);
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .register-card {
+            grid-template-columns: 1fr;
+        }
+        .register-intro {
+            padding: 2.5rem 1.75rem;
+            border-right: none;
+            border-bottom: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        }
+        .register-form {
+            padding: 2.25rem 1.5rem;
+        }
+    }
+</style>
+
+<main class="register-page">
+    <section class="register-card" aria-label="Create an account">
+        <div class="register-intro">
+            <div class="intro-icon">✦</div>
+            <h1>Start your journey with us.</h1>
+            <p>Create your account and discover a refined, personalized approach to private academic mentorship.</p>
+        </div>
+        <div class="register-form">
+            <h2>Create your account</h2>
+            <p class="subtitle">Join us today — it only takes a minute.</p>
+            
+            <form method="post" action="">
+
+                <div class="field">
+                    <label for="name">Full Name</label>
+                    <input id="name" name="name" type="text" placeholder="Alex Morgan" autocomplete="name" required>
+                </div>
+
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Create a strong password" autocomplete="new-password" minlength="8" required>
+                </div>
+
+                <label class="terms">
+                    <input type="checkbox" name="terms" required>
+                    <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span>
+                </label>
+
+                <button class="submit-button" type="submit">Create account &rarr;</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? 
+                <a href="{{ url_for('auth.login') }}">Sign in</a>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
