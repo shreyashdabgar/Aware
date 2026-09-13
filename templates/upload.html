@@ -1,0 +1,182 @@
+{% extends "index.html" %}
+
+{% block title %}Upload Video — Aware{% endblock %}
+
+{% block content %}
+<style>
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem 4rem;
+        min-height: calc(100vh - 200px);
+    }
+
+    .upload-card {
+        width: 100%;
+        max-width: 580px;
+        padding: 2.5rem;
+        background: var(--bg-card, rgba(28, 37, 65, 0.65));
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+        border-radius: var(--radius-lg, 20px);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: var(--shadow-subtle, 0 10px 30px rgba(0, 0, 0, 0.35));
+    }
+
+    .upload-card h1 {
+        font-family: var(--font-serif, 'Newsreader', Georgia, serif);
+        font-size: 1.8rem;
+        color: var(--text-main, #F4F7FC);
+        margin: 0 0 1.75rem;
+        text-align: center;
+    }
+
+    /* 1. Video file selector zone */
+    .drop-zone {
+        border: 2px dashed var(--border-glass, rgba(255, 255, 255, 0.2));
+        border-radius: var(--radius-md, 16px);
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        background: rgba(11, 19, 43, 0.4);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .drop-zone:hover {
+        border-color: var(--academic-blue, #3A86FF);
+        background: rgba(58, 134, 255, 0.08);
+    }
+
+    .drop-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .drop-text {
+        color: var(--text-main, #F4F7FC);
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .drop-subtext {
+        color: var(--text-sub, #A0AEC0);
+        font-size: 0.85rem;
+    }
+
+    .file-name-preview {
+        margin-top: 0.75rem;
+        font-weight: 600;
+        color: var(--growth-green, #06D6A0);
+        font-size: 0.875rem;
+        word-break: break-all;
+    }
+
+    /* 2. Video title field */
+    .field {
+        margin-bottom: 1.75rem;
+    }
+
+    .field label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-main, #F4F7FC);
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .field input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+        border-radius: var(--radius-md, 12px);
+        outline: none;
+        color: var(--text-main, #F4F7FC);
+        background: rgba(11, 19, 43, 0.6);
+        transition: all 0.25s ease;
+        font-family: inherit;
+    }
+
+    .field input::placeholder {
+        color: #4A5568;
+    }
+
+    .field input:focus {
+        border-color: var(--academic-blue, #3A86FF);
+        box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        background: rgba(11, 19, 43, 0.85);
+    }
+
+    /* 3. Upload button */
+    .btn-submit {
+        width: 100%;
+        padding: 0.95rem;
+        border: 0;
+        border-radius: var(--radius-md, 12px);
+        color: #FFFFFF;
+        background: var(--academic-blue, #3A86FF);
+        font-weight: 600;
+        font-size: 0.95rem;
+        font-family: inherit;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-submit:hover {
+        background: #2563EB;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(58, 134, 255, 0.45);
+    }
+
+    #video_file {
+        display: none;
+    }
+</style>
+
+<div class="upload-container">
+    <div class="upload-card">
+        <h1>🎥 Upload Video</h1>
+
+        <form method="post" action="{{ url_for('main.upload_video') if url_for is defined else '#' }}" enctype="multipart/form-data">
+            
+            <!-- Hidden Input Triggered by Click -->
+            <input type="file" id="video_file" name="video_file" accept="video/*" required>
+
+            <!-- 1. Video file selector 🎥 -->
+            <div class="drop-zone" onclick="document.getElementById('video_file').click();">
+                <span class="drop-icon">🎥</span>
+                <div class="drop-text">Select Video File</div>
+                <div class="drop-subtext">Click to open laptop files</div>
+                <div class="file-name-preview" id="file-name-preview"></div>
+            </div>
+
+            <!-- 2. Video title -->
+            <div class="field">
+                <label for="title">Video Title</label>
+                <input id="title" name="title" type="text" placeholder="Enter video title..." required>
+            </div>
+
+            <!-- 3. Upload button -->
+            <button type="submit" class="btn-submit">Upload Video</button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('video_file');
+    const filePreview = document.getElementById('file-name-preview');
+
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            filePreview.textContent = 'Selected File: ' + this.files[0].name;
+        }
+    });
+</script>
+{% endblock %}

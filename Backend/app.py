@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request, session, url_for, redirect
 from Backend.extensions import db
-from Backend.models.user import User   
+from Backend.models.user import User,Video
 from Backend.routes.auth import auth_bp
 from Backend.routes.main import main_bp
 

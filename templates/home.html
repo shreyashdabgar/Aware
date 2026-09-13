@@ -210,7 +210,7 @@
     <div class="hero-buttons">
 
         {% if session.get('user_id') %}
-            <a href="#" class="nav-btn btn-register hero-btn-lg">
+            <a href="{{ url_for('main.dashboard') }}" class="nav-btn btn-register hero-btn-lg">
                 Go to Dashboard &rarr;
             </a>
         {% else %}
