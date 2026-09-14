@@ -99,6 +99,31 @@
         color: var(--text-sub, #A0AEC0);
     }
 
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .video-card {
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+        border-radius: var(--radius-md, 12px);
+    }
+
+    .video-card h3 {
+        margin: 0 0 0.75rem;
+        color: var(--text-main, #F4F7FC);
+        overflow-wrap: anywhere;
+    }
+
+    .video-card p {
+        margin: 0.35rem 0;
+        color: var(--text-sub, #A0AEC0);
+        font-size: 0.9rem;
+    }
+
     @media (max-width: 640px) {
         .dashboard-header {
             flex-direction: column;
@@ -146,6 +171,24 @@
 
         <h2 class="section-title">📚 Your Videos</h2>
 
+        {% if videos %}
+            <div class="video-grid">
+                {% for video in videos %}
+                    <article class="video-card">
+                        <h3>{{ video.title or video.filename or 'Untitled video' }}</h3>
+                        {% if video.filename and video.title %}
+                            <p>File: {{ video.filename }}</p>
+                        {% endif %}
+                        {% if video.created_at %}
+                            <p>Uploaded: {{ video.created_at.strftime('%b %d, %Y') }}</p>
+                        {% endif %}
+                        {% if video.status %}
+                            <p>Status: {{ video.status }}</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
         <div class="empty-state">
 
             <p>You haven't uploaded any videos yet.</p>
@@ -157,6 +200,7 @@
             </a>
 
         </div>
+        {% endif %}
 
     </section>
 
