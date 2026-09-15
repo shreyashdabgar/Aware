@@ -1,205 +1,337 @@
-```html
 {% extends "index.html" %}
 
-{% block title %}Dashboard — Aware{% endblock %}
+{% block title %}Dashboard — VideoSage{% endblock %}
 
 {% block content %}
 
 <style>
+    /* Light Sage Palette matching the provided design system */
+    :root {
+        --bg-sage-light: #D8E2DC;       /* Main soft sage background */
+        --card-mint-light: rgba(222, 234, 232, 0.65); /* Semi-transparent section tint */
+        --card-white: rgba(255, 255, 255, 0.85);  /* Glassy white container background */
+        
+        --text-primary: #11382B;        /* Deep green heading color */
+        --text-body: #2D4A3E;           /* Medium forest green text */
+        --text-muted: #5C7368;          /* Soft grey-green secondary text */
+        
+        --accent-sage: #B1C9BE;         /* Active tab / badge fill */
+        --accent-btn: #A3C4B5;          /* Sage button fill */
+        --border-subtle: rgba(17, 56, 43, 0.12);
+        
+        --radius-lg: 24px;
+        --radius-md: 14px;
+        --radius-sm: 8px;
+    }
+
+    body {
+        background-color: var(--bg-sage-light) !important;
+        color: var(--text-body);
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     .dashboard-container {
         display: flex;
         flex-direction: column;
-        gap: 2rem;
-        padding: 1rem 0 3rem;
-        max-width: 1000px;
+        gap: 1.75rem;
+        padding: 2rem 1rem 4rem;
+        max-width: 1120px;
         margin: 0 auto;
     }
 
+    /* Top Welcome Banner - Outer card styling & backgrounds removed */
     .dashboard-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 2rem 2.5rem;
-        background: var(--bg-card, rgba(28, 37, 65, 0.65));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
-        border-radius: var(--radius-lg, 20px);
-        box-shadow: var(--shadow-subtle, 0 10px 30px rgba(0, 0, 0, 0.35));
+        padding: 1rem 0;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
     }
 
     .welcome-text h1 {
-        font-family: var(--font-serif, 'Newsreader', Georgia, serif);
-        font-size: clamp(1.8rem, 3vw, 2.4rem);
-        color: var(--text-main, #F4F7FC);
+        font-size: clamp(1.75rem, 2.5vw, 2.2rem);
+        font-weight: 800;
+        color: var(--text-primary);
         margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .welcome-text p {
+        margin: 0.35rem 0 0;
+        color: var(--text-muted);
+        font-size: 0.95rem;
     }
 
     .header-actions {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
+    /* Sage Pill Action Buttons */
     .btn-action {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.75rem 1.25rem;
-        border-radius: var(--radius-md, 12px);
-        font-size: 0.9rem;
-        font-weight: 600;
+        padding: 0.65rem 1.25rem;
+        border-radius: 30px;
+        font-size: 0.875rem;
+        font-weight: 700;
         text-decoration: none;
-        transition: all 0.25s ease;
+        transition: all 0.2s ease;
         cursor: pointer;
         border: none;
     }
 
     .btn-primary {
-        background: var(--academic-blue, #3A86FF);
-        color: #FFFFFF;
-        box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        background-color: var(--accent-btn);
+        color: var(--text-primary);
+        box-shadow: 0 4px 12px rgba(17, 56, 43, 0.08);
     }
 
     .btn-primary:hover {
-        background: #2563EB;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(58, 134, 255, 0.45);
+        background-color: #92B8A7;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(17, 56, 43, 0.12);
     }
 
     .btn-logout {
-        background: rgba(239, 68, 68, 0.15);
-        color: #FCA5A5;
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: rgba(217, 83, 79, 0.12);
+        color: #C0392B;
     }
 
     .btn-logout:hover {
-        background: rgba(239, 68, 68, 0.3);
-        color: #FFFFFF;
+        background: rgba(217, 83, 79, 0.22);
     }
 
+    /* Main Content Section Card - Solid box background removed */
     .section-card {
-        padding: 2rem;
-        background: var(--bg-card, rgba(28, 37, 65, 0.65));
-        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
-        border-radius: var(--radius-lg, 20px);
-        backdrop-filter: blur(16px);
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
     }
 
-    .section-title {
-        font-family: var(--font-serif, 'Newsreader', Georgia, serif);
-        font-size: 1.5rem;
-        color: var(--text-main, #F4F7FC);
+    /* Control Bar */
+    .section-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 1.5rem;
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: var(--text-sub, #A0AEC0);
+    .section-title-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
+    .section-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+
+    .video-count-badge {
+        background: var(--accent-sage);
+        color: var(--text-primary);
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 0.2rem 0.65rem;
+        border-radius: 20px;
+    }
+
+    /* Search Input with slight glassmorphism */
+    .search-input {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid var(--border-subtle);
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        color: var(--text-primary);
+        font-size: 0.85rem;
+        outline: none;
+        width: 200px;
+        transition: all 0.25s ease;
+    }
+
+    .search-input:focus {
+        background: var(--card-white);
+        border-color: var(--text-primary);
+        box-shadow: 0 0 0 3px rgba(151, 177, 166, 0.25);
+    }
+
+    /* Video Cards Grid */
     .video-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 1.25rem;
     }
 
+    /* Video Cards maintain glassmorphic surface structure */
     .video-card {
         padding: 1.25rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
-        border-radius: var(--radius-md, 12px);
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .video-card:hover {
+        transform: translateY(-3px);
+        background: var(--card-white);
+        box-shadow: 0 10px 25px rgba(17, 56, 43, 0.08);
+    }
+
+    .video-thumbnail-placeholder {
+        height: 110px;
+        background: rgba(222, 234, 232, 0.5);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.85rem;
+        color: var(--text-primary);
     }
 
     .video-card h3 {
-        margin: 0 0 0.75rem;
-        color: var(--text-main, #F4F7FC);
+        margin: 0 0 0.4rem;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        font-weight: 700;
         overflow-wrap: anywhere;
     }
 
     .video-card p {
-        margin: 0.35rem 0;
-        color: var(--text-sub, #A0AEC0);
-        font-size: 0.9rem;
+        margin: 0.2rem 0;
+        color: var(--text-muted);
+        font-size: 0.825rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.725rem;
+        font-weight: 700;
+        background: rgba(222, 234, 232, 0.8);
+        color: var(--text-primary);
+        margin-top: 0.85rem;
+        width: fit-content;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 1rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px dashed var(--border-subtle);
+        border-radius: var(--radius-md);
     }
 
     @media (max-width: 640px) {
-        .dashboard-header {
+        .dashboard-header, .section-header-bar {
             flex-direction: column;
             align-items: flex-start;
-            gap: 1.25rem;
+            gap: 1rem;
+            padding: 0;
         }
 
-        .header-actions {
+        .header-actions, .section-actions {
             width: 100%;
             justify-content: space-between;
+        }
+
+        .search-input {
+            width: 100%;
         }
     }
 </style>
 
-
 <div class="dashboard-container">
 
-    <!-- Welcome + Actions -->
+    <!-- Header Section -->
     <header class="dashboard-header">
-
         <div class="welcome-text">
-            <h1>👋 Welcome, {{ user.name }}</h1>
+            <h1>Welcome back, {{ user.name }}!</h1>
+            <p>Here's what's happening with your videos</p>
         </div>
 
         <div class="header-actions">
-
-            <!-- Upload Video -->
             <a href="{{ url_for('main.upload_video') }}" class="btn-action btn-primary">
-                🎥 Upload Video
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Video
             </a>
 
-            <!-- Logout -->
-            <a href="{{ url_for('auth.logout') }}"
-               class="btn-action btn-logout">
-                🚪 Logout
+            <a href="{{ url_for('auth.logout') }}" class="btn-action btn-logout">
+                Logout
             </a>
-
         </div>
-
     </header>
 
-
-    <!-- Your Videos -->
+    <!-- Main Content Section -->
     <section class="section-card">
 
-        <h2 class="section-title">📚 Your Videos</h2>
+        <!-- Controls Bar -->
+        <div class="section-header-bar">
+            <div class="section-title-group">
+                <h2 class="section-title">Your Videos</h2>
+                {% if videos %}
+                    <span class="video-count-badge">{{ videos|length }}</span>
+                {% endif %}
+            </div>
 
+            {% if videos %}
+            <div class="section-actions">
+                <input type="text" placeholder="Search library..." class="search-input">
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Video Cards Grid -->
         {% if videos %}
             <div class="video-grid">
                 {% for video in videos %}
-                    <article class="video-card">
-                        <h3>{{ video.title or video.filename or 'Untitled video' }}</h3>
-                        {% if video.filename and video.title %}
-                            <p>File: {{ video.filename }}</p>
-                        {% endif %}
-                        {% if video.created_at %}
-                            <p>Uploaded: {{ video.created_at.strftime('%b %d, %Y') }}</p>
-                        {% endif %}
-                        {% if video.status %}
-                            <p>Status: {{ video.status }}</p>
-                        {% endif %}
-                    </article>
+                    <a href="{{ url_for('main.video', video_id=video.id) }}" class="video-card-link">
+                        <article class="video-card">
+                            <div>
+                                <div class="video-thumbnail-placeholder">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                                </div>
+                                <h3>{{ video.title or video.file_name or 'Untitled video' }}</h3>
+                                
+                                {% if video.file_name and video.title %}
+                                    <p><strong>File:</strong> {{ video.file_name }}</p>
+                                {% endif %}
+                                
+                                {% if video.upload_date %}
+                                    <p><strong>Uploaded:</strong> {{ video.upload_date.strftime('%b %d, %Y') }}</p>
+                                {% endif %}
+                            </div>
+                        </article>
+                    </a>
                 {% endfor %}
             </div>
         {% else %}
-        <div class="empty-state">
-
-            <p>You haven't uploaded any videos yet.</p>
-
-            <a href="{{ url_for('main.upload_video') }}"
-               class="btn-action btn-primary"
-               style="margin-top: 1rem;">
-                🎥 Upload Your First Video
-            </a>
-
-        </div>
+            <div class="empty-state">
+                <p>You haven't uploaded any videos yet.</p>
+                <a href="{{ url_for('main.upload_video') }}"
+                   class="btn-action btn-primary"
+                   style="margin-top: 1rem;">
+                    Upload Your First Video
+                </a>
+            </div>
         {% endif %}
 
     </section>
@@ -207,4 +339,3 @@
 </div>
 
 {% endblock %}
-```

@@ -1,0 +1,30 @@
+/* Design Tokens - Light Sage, Mint & Eucalyptus Palette */
+:root {
+    --bg-sage-light: #D8E2DC;          /* Primary Page Background */
+    --card-mint-light: rgba(222, 234, 232, 0.65);
+    --card-white: rgba(255, 255, 255, 0.85);
+    
+    --accent-eucalyptus: #97B1A6;      /* Key Highlight Accent Color */
+    --accent-btn-hover: #8EAFA0;       /* Primary Hover State */
+    --accent-sage: #B1C9BE;            /* Active tab / badge fill */
+    --accent-btn: #A3C4B5;             /* Sage button fill */
+    
+    --text-primary: #11382B;           /* Deep Forest Green Headings */
+    --text-body: #2D4A3E;              /* Readable Medium Forest Text */
+    --text-muted: #5C7368;             /* Muted Grey-Green Text */
+    
+    --border-subtle: rgba(17, 56, 43, 0.12);
+    --border-hover: rgba(151, 177, 166, 0.4);
+    
+    --radius-lg: 24px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+}
+
+body {
+    background-color: var(--bg-sage-light) !important;
+    color: var(--text-body);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+}

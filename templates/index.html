@@ -3,40 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Academic Excellence & Elite Tutoring">
-    <title>Academic Excellence | Private Tutoring</title>
+    <meta name="description" content="Academic Excellence & Elite AI Tutoring">
+    <title>{% block title %}Academic Excellence | Private Tutoring{% endblock %}</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Three.js Library for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        /* Design Tokens - Rich Luxury Academic Palette */
+        /* Design Tokens - Light Sage & Mint Palette */
         :root {
             --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
             --font-serif: 'Playfair Display', Georgia, serif;
             
-            /* Rich Base & Surface Colors */
-            --bg-deep: #070913;             /* Midnight Onyx */
-            --surface-glass: rgba(18, 20, 38, 0.55);
-            --surface-hover: rgba(28, 31, 58, 0.7);
+            --bg-sage-light: #D8E2DC;          /* Base Light Sage Background */
+            --card-mint-light: rgba(222, 234, 232, 0.75); 
+            --card-white: rgba(255, 255, 255, 0.85);      
             
-            /* Classy Luxury Accent Spectrum */
-            --gold-champagne: #F3E5AB;    /* Luminous Warm Gold */
-            --gold-muted: #D4AF37;        /* Classic Metallic Gold */
-            --royal-violet: #6366f1;      /* Deep Rich Indigo-Violet */
-            --velvet-wine: #ec4899;        /* Sophisticated Magenta/Wine Accent */
+            --accent-eucalyptus: #97B1A6;      /* Highlight Color */
+            --accent-sage: #B1C9BE;            /* Soft Sage Accent */
+            --accent-btn: #A3C4B5;             /* Button Base */
+            --accent-btn-hover: #8EAFA0;       /* Darker Sage Hover */
             
-            /* Refined Text Neutral Colors */
-            --text-primary: #F8FAFC;
-            --text-muted: #94A3B8;
-            --text-gold-gradient: linear-gradient(135deg, #FFF6D6 0%, #F3E5AB 50%, #C5A059 100%);
+            --text-primary: #11382B;           /* Deep Forest Green */
+            --text-body: #2D4A3E;              /* Readable Medium Forest */
+            --text-muted: #5C7368;             /* Muted Grey-Green */
             
-            /* Border & Glow Details */
-            --border-glass: rgba(243, 229, 171, 0.12);
-            --border-hover: rgba(243, 229, 171, 0.35);
-            --glow-gold: rgba(212, 175, 55, 0.15);
+            --border-subtle: rgba(17, 56, 43, 0.08);
+            --border-hover: rgba(151, 177, 166, 0.4);
+            --shadow-soft: 0 10px 30px rgba(17, 56, 43, 0.05);
             
             --radius-md: 14px;
             --radius-lg: 24px;
@@ -53,14 +52,14 @@
             display: flex;
             flex-direction: column;
             font-family: var(--font-sans);
-            color: var(--text-primary);
-            background-color: var(--bg-deep);
+            color: var(--text-body);
+            background-color: var(--bg-sage-light);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Interactive Canvas Layer */
-        #interactive-bg {
+        /* 3D Canvas Background Layer */
+        #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -70,7 +69,7 @@
             pointer-events: none;
         }
 
-        /* Subtle Geometric Grid & Noise Overlay for Depth */
+        /* Ambient Micro-Dot Overlay */
         .classy-overlay {
             position: fixed;
             top: 0;
@@ -78,14 +77,13 @@
             width: 100vw;
             height: 100vh;
             z-index: 0;
-            opacity: 0.025;
+            opacity: 0.12;
             pointer-events: none;
-            background-image: 
-                radial-gradient(circle at 50% 50%, #ffffff 1px, transparent 1px);
-            background-size: 36px 36px;
+            background-image: radial-gradient(circle at 50% 50%, #11382B 1px, transparent 1px);
+            background-size: 32px 32px;
         }
 
-        /* Page Layout Overlay Container */
+        /* Page Content Overlay Container */
         .page-container {
             position: relative;
             z-index: 1;
@@ -93,78 +91,7 @@
             width: 100%;
             max-width: 1100px;
             margin: 0 auto;
-            padding: clamp(32px, 6vw, 80px) 24px;
-        }
-
-        /* Typography Presets */
-        h1, h2, h3 {
-            margin: 0 0 1rem;
-            letter-spacing: -0.01em;
-        }
-
-        .heading-serif {
-            font-family: var(--font-serif);
-            font-weight: 600;
-        }
-
-        /* Golden Gradient Text Effect */
-        .gold-text {
-            background: var(--text-gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p {
-            color: var(--text-muted);
-            line-height: 1.75;
-            margin: 0 0 1.5rem;
-            font-size: 1.05rem;
-        }
-
-        /* Glassmorphic Luxury Card Layout */
-        .tutor-card {
-            background: var(--surface-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-lg);
-            padding: clamp(28px, 5vw, 48px);
-            box-shadow: 
-                0 30px 60px -12px rgba(0, 0, 0, 0.45),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.5s var(--transition-smooth);
-        }
-
-        .tutor-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--border-hover);
-            box-shadow: 
-                0 35px 70px -15px rgba(0, 0, 0, 0.6),
-                0 0 30px var(--glow-gold),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-        }
-
-        /* Classy Primary Button with Ambient Glow */
-        .btn-luxury {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
-            color: #070913;
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.02em;
-            text-decoration: none;
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
-            transition: all 0.3s ease;
-        }
-
-        .btn-luxury:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.45);
-            filter: brightness(1.08);
+            padding: clamp(24px, 4vw, 48px) 24px;
         }
     </style>
 </head>
@@ -173,131 +100,110 @@
     <!-- Background Pattern Overlay -->
     <div class="classy-overlay"></div>
 
-    <!-- Canvas for Dynamic Rich Color Fluid Background -->
-    <canvas id="interactive-bg"></canvas>
+    <!-- 3D Background Canvas -->
+    <div id="canvas-container"></div>
 
-    <!-- Content Container -->
+    <!-- Main Content Injection Block -->
     <main class="page-container">
-
-    {% block content %}
-        <!-- Example Showcase Section -->
-        <section class="tutor-card">
-            <span class="gold-text" style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">
-                ★ Bespoke Academic Tutoring
-            </span>
-            <h1 class="heading-serif" style="font-size: clamp(2.2rem, 4.5vw, 3.4rem); color: var(--text-primary); margin-top: 16px;">
-                Cultivating Intellectual <span class="gold-text">Mastery.</span>
-            </h1>
-            <p style="max-width: 620px;">
-                Elevated private mentorship tailored for ambitious scholars. Specialized in advanced mathematics, logical reasoning, and tailored academic preparation.
-            </p>
-            <a href="#" class="btn-luxury">Reserve a Consultation &rarr;</a>
-        </section>
-    {% endblock %}
-
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- Canvas Rich Ambient Color Script -->
+    <!-- Interactive 3D Canvas Engine -->
     <script>
-        const canvas = document.getElementById('interactive-bg');
-        const ctx = canvas.getContext('2d');
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('canvas-container');
 
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0xD8E2DC, 0.02);
 
-        const mouse = { x: width / 2, y: height / 2 };
-        const targetMouse = { x: width / 2, y: height / 2 };
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 3, 14);
+            camera.lookAt(0, 0, 0);
 
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            initOrbs();
-        });
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
 
-        window.addEventListener('mousemove', (e) => {
-            targetMouse.x = e.clientX;
-            targetMouse.y = e.clientY;
-        });
+            // Lighting setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
 
-        // Floating Color Mesh Orbs
-        class ColorOrb {
-            constructor(x, y, radius, color, speedX, speedY) {
-                this.x = x;
-                this.y = y;
-                this.radius = radius;
-                this.color = color;
-                this.vx = speedX;
-                this.vy = speedY;
-            }
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 20, 15);
+            scene.add(dirLight);
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
+            // Palette-matched Materials
+            const matBaseWhite = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, flatShading: true });
+            const matMint = new THREE.MeshPhongMaterial({ color: 0xDEEAE8, flatShading: true });
+            const matSage = new THREE.MeshPhongMaterial({ color: 0x97B1A6, flatShading: true });
+            const matWireframe = new THREE.MeshBasicMaterial({ color: 0x97B1A6, wireframe: true, transparent: true, opacity: 0.35 });
 
-                // Bounce gently at edges
-                if (this.x - this.radius < 0 || this.x + this.radius > width) this.vx *= -1;
-                if (this.y - this.radius < 0 || this.y + this.radius > height) this.vy *= -1;
-            }
+            const group3D = new THREE.Group();
 
-            draw() {
-                const gradient = ctx.createRadialGradient(
-                    this.x, this.y, 0, 
-                    this.x, this.y, this.radius
-                );
-                gradient.addColorStop(0, this.color);
-                gradient.addColorStop(1, 'rgba(7, 9, 19, 0)');
+            // 1. Isometric Floor Grid
+            const gridHelper = new THREE.GridHelper(30, 30, 0x97B1A6, 0xDEEAE8);
+            gridHelper.position.y = -3.5;
+            group3D.add(gridHelper);
 
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+            // 2. Floating AI Geometry Elements
+            const bLeft = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 0), matSage);
+            const bLeftWire = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 0), matWireframe);
+            bLeftWire.scale.set(1.2, 1.2, 1.2);
+            
+            const groupLeft = new THREE.Group();
+            groupLeft.add(bLeft, bLeftWire);
+            groupLeft.position.set(-6, 1, -2);
+            group3D.add(groupLeft);
 
-        let orbs = [];
-        function initOrbs() {
-            orbs = [
-                // Deep Indigo Glow
-                new ColorOrb(width * 0.25, height * 0.3, 450, 'rgba(99, 102, 241, 0.18)', 0.3, 0.2),
-                // Deep Velvet Magenta/Wine Glow
-                new ColorOrb(width * 0.75, height * 0.6, 500, 'rgba(236, 72, 153, 0.12)', -0.2, 0.3),
-                // Warm Champagne Accent Light
-                new ColorOrb(width * 0.5, height * 0.8, 380, 'rgba(212, 175, 55, 0.08)', 0.2, -0.2)
-            ];
-        }
+            const bRight1 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), matBaseWhite);
+            bRight1.position.set(6, 1.5, -2);
+            
+            const bRight2 = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8), matMint);
+            bRight2.position.set(5.5, -1, 0);
 
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
+            group3D.add(bRight1, bRight2);
+            scene.add(group3D);
 
-            // Smooth Interpolation for Mouse Tracking
-            mouse.x += (targetMouse.x - mouse.x) * 0.04;
-            mouse.y += (targetMouse.y - mouse.y) * 0.04;
+            // Interactive Parallax Mouse Controls
+            let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
 
-            // Render Animated Ambient Orbs
-            orbs.forEach(orb => {
-                orb.update();
-                orb.draw();
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
             });
 
-            // Interactive Golden Champagne Mouse Spotlight
-            const mouseSpotlight = ctx.createRadialGradient(
-                mouse.x, mouse.y, 0, 
-                mouse.x, mouse.y, 350
-            );
-            mouseSpotlight.addColorStop(0, 'rgba(243, 229, 171, 0.07)');
-            mouseSpotlight.addColorStop(0.5, 'rgba(99, 102, 241, 0.04)');
-            mouseSpotlight.addColorStop(1, 'transparent');
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
 
-            ctx.fillStyle = mouseSpotlight;
-            ctx.beginPath();
-            ctx.arc(mouse.x, mouse.y, 350, 0, Math.PI * 2);
-            ctx.fill();
+            let clock = new THREE.Clock();
 
-            requestAnimationFrame(animate);
-        }
+            function animate() {
+                requestAnimationFrame(animate);
 
-        initOrbs();
-        animate();
+                const elapsedTime = clock.getElapsedTime();
+
+                targetX += (mouseX - targetX) * 0.05;
+                targetY += (mouseY - targetY) * 0.05;
+
+                groupLeft.rotation.y = elapsedTime * 0.4;
+                bRight1.rotation.x = elapsedTime * 0.3;
+                bRight1.rotation.y = elapsedTime * 0.3;
+
+                groupLeft.position.y = Math.sin(elapsedTime * 1.5) * 0.3 + 1;
+                bRight1.position.y = Math.cos(elapsedTime * 1.2) * 0.25 + 1.5;
+
+                group3D.rotation.y = targetX * 0.2;
+                group3D.rotation.x = targetY * 0.1;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        });
     </script>
 </body>
 </html>

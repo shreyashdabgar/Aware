@@ -2,6 +2,25 @@
 
 {% block content %}
 <style>
+    /* Design Tokens - Light Sage, Mint & Eucalyptus Palette */
+    :root {
+        --bg-sage-light: #D8E2DC;          /* Primary Page Background */
+        --card-mint-light: rgba(222, 234, 232, 0.75);
+        --card-white: rgba(255, 255, 255, 0.85);
+        
+        --accent-eucalyptus: #97B1A6;      /* Highlight Color */
+        --accent-btn-hover: #8EAFA0;       /* Hover Accent State */
+        
+        --text-primary: #11382B;           /* Deep Forest Green Headings */
+        --text-body: #2D4A3E;              /* Readable Medium Forest Text */
+        --text-muted: #5C7368;             /* Muted Grey-Green Text */
+        
+        --border-subtle: rgba(17, 56, 43, 0.12);
+        --border-hover: rgba(151, 177, 166, 0.4);
+        --radius-lg: 24px;
+        --radius-md: 14px;
+    }
+
     .register-page {
         min-height: calc(100vh - 128px);
         display: grid;
@@ -9,35 +28,23 @@
         padding: 2rem 1rem;
     }
 
+    /* Container Card background, box-shadow, and borders removed */
     .register-card {
         width: min(100%, 960px);
         display: grid;
         grid-template-columns: 0.95fr 1.05fr;
-        overflow: hidden;
-        border-radius: var(--radius-lg, 24px);
-        background: var(--surface-glass, rgba(18, 20, 38, 0.65));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
-        box-shadow: 
-            0 30px 60px -12px rgba(0, 0, 0, 0.5),
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-        transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        background: transparent;  /* Removed solid white card background */
+        border: none;             /* Removed outer box border */
+        box-shadow: none;         /* Removed box shadow */
+        gap: 2rem;
     }
 
-    .register-card:hover {
-        border-color: var(--border-hover, rgba(243, 229, 171, 0.35));
-        box-shadow: 
-            0 35px 70px -15px rgba(0, 0, 0, 0.6),
-            0 0 30px var(--glow-gold, rgba(212, 175, 55, 0.15));
-    }
-
-    /* Left Branding Banner */
+    /* Left Branding Banner - Box background removed */
     .register-intro {
-        padding: 3.5rem 2.5rem;
-        color: var(--text-primary, #F8FAFC);
-        background: linear-gradient(145deg, rgba(18, 20, 38, 0.95), rgba(30, 27, 75, 0.75));
-        border-right: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+        padding: 2rem;
+        color: var(--text-primary);
+        background: transparent; /* Removed mint box background */
+        border-right: none;      /* Removed divider border */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -45,7 +52,7 @@
 
     .intro-icon {
         font-size: 1.8rem;
-        color: var(--gold-champagne, #F3E5AB);
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
     }
 
@@ -55,26 +62,28 @@
         line-height: 1.2;
         font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
         font-weight: 600;
+        color: var(--text-primary);
     }
 
     .register-intro p {
-        color: var(--text-muted, #94A3B8);
+        color: var(--text-muted);
         line-height: 1.7;
         font-size: 0.95rem;
         margin: 0;
     }
 
-    /* Right Form Container */
+    /* Right Form Container - Box background removed */
     .register-form {
-        padding: 3.5rem 3rem;
+        padding: 2rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        background: transparent; /* Removed solid white form background */
     }
 
     .register-form h2 {
         margin: 0 0 0.45rem;
-        color: var(--text-primary, #F8FAFC);
+        color: var(--text-primary);
         font-size: 1.8rem;
         font-weight: 700;
         font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
@@ -82,7 +91,7 @@
 
     .subtitle {
         margin: 0 0 2rem;
-        color: var(--text-muted, #94A3B8);
+        color: var(--text-muted);
         font-size: 0.925rem;
     }
 
@@ -93,32 +102,36 @@
     .field label {
         display: block;
         margin-bottom: 0.45rem;
-        color: var(--text-primary, #F8FAFC);
-        font-weight: 500;
+        color: var(--text-primary);
+        font-weight: 600;
         font-size: 0.875rem;
     }
 
+    /* Glassy/Semi-transparent Form Inputs */
     .field input {
         width: 100%;
         box-sizing: border-box;
         padding: 0.85rem 1rem;
-        border: 1px solid var(--border-glass, rgba(243, 229, 171, 0.15));
-        border-radius: var(--radius-md, 12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
         outline: none;
-        color: var(--text-primary, #F8FAFC);
-        background: rgba(7, 9, 19, 0.6);
+        color: var(--text-primary);
+        background: rgba(255, 255, 255, 0.65); /* Semi-transparent fill */
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         transition: all 0.25s ease;
         font-family: inherit;
     }
 
     .field input::placeholder {
-        color: #475569;
+        color: var(--text-muted);
+        opacity: 0.7;
     }
 
     .field input:focus {
-        border-color: var(--gold-champagne, #F3E5AB);
-        box-shadow: 0 0 0 3px rgba(243, 229, 171, 0.15);
-        background: rgba(7, 9, 19, 0.85);
+        border-color: var(--accent-eucalyptus);
+        box-shadow: 0 0 0 3px rgba(151, 177, 166, 0.25);
+        background: var(--card-white);
     }
 
     /* Terms and Conditions Checkbox */
@@ -127,50 +140,50 @@
         gap: 0.65rem;
         align-items: flex-start;
         margin: 0.75rem 0 1.75rem;
-        color: var(--text-muted, #94A3B8);
+        color: var(--text-muted);
         font-size: 0.85rem;
         line-height: 1.5;
     }
 
     .terms input {
         margin-top: 0.2rem;
-        accent-color: var(--gold-muted, #D4AF37);
+        accent-color: var(--accent-eucalyptus);
         cursor: pointer;
     }
 
     .terms a, .login-link a {
-        color: var(--gold-champagne, #F3E5AB);
-        font-weight: 500;
+        color: var(--text-primary);
+        font-weight: 600;
         text-decoration: none;
-        transition: opacity 0.2s ease;
+        transition: color 0.2s ease;
     }
 
     .terms a:hover, .login-link a:hover {
-        opacity: 0.85;
+        color: var(--accent-eucalyptus);
         text-decoration: underline;
     }
 
-    /* Luxury Submit Button */
+    /* Primary Eucalyptus Button */
     .submit-button {
         width: 100%;
         padding: 0.95rem;
         border: 0;
-        border-radius: var(--radius-md, 12px);
-        color: #070913;
-        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
+        border-radius: 30px;
+        color: var(--text-primary);
+        background-color: var(--accent-eucalyptus);
         font-weight: 700;
         font-size: 0.95rem;
         font-family: inherit;
         letter-spacing: 0.02em;
         cursor: pointer;
-        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
-        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        box-shadow: 0 4px 15px rgba(151, 177, 166, 0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
 
     .submit-button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
-        filter: brightness(1.08);
+        background-color: var(--accent-btn-hover);
+        box-shadow: 0 6px 20px rgba(151, 177, 166, 0.5);
     }
 
     .submit-button:active {
@@ -181,21 +194,21 @@
     .login-link {
         margin: 1.75rem 0 0;
         text-align: center;
-        color: var(--text-muted, #94A3B8);
+        color: var(--text-muted);
         font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
         .register-card {
             grid-template-columns: 1fr;
+            gap: 0;
         }
         .register-intro {
-            padding: 2.5rem 1.75rem;
-            border-right: none;
-            border-bottom: 1px solid var(--border-glass, rgba(243, 229, 171, 0.12));
+            padding: 1.5rem 0.5rem;
+            text-align: center;
         }
         .register-form {
-            padding: 2.25rem 1.5rem;
+            padding: 1.5rem 0.5rem;
         }
     }
 </style>

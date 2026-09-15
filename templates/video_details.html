@@ -1,0 +1,207 @@
+{% extends "index.html" %}
+
+{% block title %}{{ video.title or video.file_name or 'Video Details' }} — VideoSage{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Light Sage Palette matching design system */
+    :root {
+        --bg-sage-light: #D8E2DC;
+        --card-mint-light: rgba(222, 234, 232, 0.4);
+        --card-white-glass: rgba(255, 255, 255, 0.35); /* Soft transparent background */
+        
+        --text-primary: #11382B;
+        --text-body: #2D4A3E;
+        --text-muted: #5C7368;
+        
+        --accent-sage: #B1C9BE;
+        --accent-btn: #A3C4B5;
+        --border-subtle: rgba(17, 56, 43, 0.1);
+        
+        --radius-lg: 20px;
+        --radius-md: 12px;
+        --radius-sm: 8px;
+    }
+
+    body {
+        background-color: var(--bg-sage-light) !important;
+        color: var(--text-body);
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* Outer Container */
+    .detail-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.5rem 1rem 4rem;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    /* Top Left Header Bar */
+    .detail-header-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1.1rem;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: var(--text-primary);
+        border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.7);
+        transform: translateY(-1px);
+    }
+
+    .btn-danger {
+        background: rgba(217, 83, 79, 0.12);
+        color: #C0392B;
+    }
+
+    .btn-danger:hover {
+        background: rgba(217, 83, 79, 0.22);
+    }
+
+    /* Video Player Screen */
+    .video-wrapper {
+        background: #000;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 16px 40px rgba(17, 56, 43, 0.15);
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* Metadata Details Box BELOW Video Player */
+    .video-info-card {
+        padding: 0.85rem 1.1rem;
+        background: var(--card-white-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .video-info-header h1 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+
+    .video-meta-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.2rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: rgba(222, 234, 232, 0.4);
+        padding: 0.25rem 0.6rem;
+        border-radius: 16px;
+    }
+
+    .video-description {
+        line-height: 1.4;
+        color: var(--text-body);
+        font-size: 0.825rem;
+        border-top: 1px solid var(--border-subtle);
+        padding-top: 0.5rem;
+        margin: 0;
+    }
+</style>
+
+<div class="detail-container">
+
+    <!-- 1. UPPER LEFT BAR: Back to Dashboard -->
+    <div class="detail-header-nav">
+        <a href="{{ url_for('main.dashboard') }}" class="btn-action btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- 2. SCREEN: Video Player -->
+    <div class="video-wrapper">
+        <video controls controlsList="nodownload" poster="{{ video.thumbnail_url or '' }}">
+            <source src="{{ url_for('main.file_name_video', filename=video.file_name) if video.file_name else video.url }}" type="video/mp4">
+            Your browser does not support playing HTML5 videos.
+        </video>
+    </div>
+
+    <!-- 3. BELOW SCREEN: Text & Details (Test2, File Name, Date) -->
+    <article class="video-info-card">
+        <div class="video-info-header">
+            <h1>{{ video.title or video.file_name or 'Test2' }}</h1>
+            
+            <div class="video-meta-tags">
+                {% if video.file_name %}
+                    <span class="meta-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        {{ video.file_name }}
+                    </span>
+                {% endif %}
+
+                {% if video.upload_date %}
+                    <span class="meta-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        {{ video.upload_date.strftime('%B %d, %Y') }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if video.description %}
+            <p class="video-description">
+                {{ video.description }}
+            </p>
+        {% endif %}
+    </article>
+
+</div>
+
+{% endblock %}

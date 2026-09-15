@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session
 from Backend.extensions import db
 from Backend.models.user import User
+from datetime import timedelta
 
 
 # creating a Blueprint for authentication routes
