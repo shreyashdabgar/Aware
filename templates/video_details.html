@@ -168,7 +168,7 @@
     <!-- 2. SCREEN: Video Player -->
     <div class="video-wrapper">
         <video controls controlsList="nodownload" poster="{{ video.thumbnail_url or '' }}">
-            <source src="{{ url_for('main.file_name_video', filename=video.file_name) if video.file_name else video.url }}" type="video/mp4">
+            <source src="{{ url_for('main.video_file', video_id = video.id) if video.file_name else video.url }}" type="video/mp4">
             Your browser does not support playing HTML5 videos.
         </video>
     </div>

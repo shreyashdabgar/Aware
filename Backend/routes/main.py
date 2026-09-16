@@ -84,8 +84,8 @@ def video(video_id):
         return jsonify({'error': str(e)}), 500
 
 
-@main_bp.route('/video-filename/<int:video_id>')
-def file_name_video(video_id):
+@main_bp.route('/video-file/<int:video_id>')
+def video_file(video_id):
     try:
         user_id = session['user_id']
         video = Video.query.get_or_404(video_id)
@@ -101,3 +101,4 @@ def file_name_video(video_id):
     except Exception as e :
         print("VIDEO ERROR:", e)
         return jsonify({'error': str(e)}), 500
+
