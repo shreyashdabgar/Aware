@@ -31,7 +31,7 @@ def upload_video():
             title = request.form['title']
 
             #must select file name 
-            if not video.file_name:
+            if not video.filename:
                 return jsonify('You must select Video'),200
 
             #cannot enter empty title
@@ -42,7 +42,7 @@ def upload_video():
             #gives unique id to pervent overqrite becuase of same name 
             random_id = uuid.uuid4()
 
-            split = os.path.splitext(video.file_name)
+            split = os.path.splitext(video.filename)
             random_name_uuid = str(random_id) + split[1]
 
             #checking that our file is actual video or not 
@@ -95,6 +95,7 @@ def video_file(video_id):
             directory=os.path.abspath('uploads'),
             path=filename
             )
+            
             return actual_video
         else :
             return jsonify('there is error in file'),403

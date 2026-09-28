@@ -49,6 +49,18 @@
         margin-bottom: 0.25rem;
     }
 
+    .btn-process {
+        background: var(--accent-btn);
+        color: var(--text-primary);
+        box-shadow: 0 4px 12px rgba(17, 56, 43, 0.12);
+    }
+
+    .btn-process:hover {
+        background: var(--accent-sage);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 16px rgba(17, 56, 43, 0.18);
+    }
+
     .btn-action {
         display: inline-flex;
         align-items: center;
@@ -162,6 +174,9 @@
         <a href="{{ url_for('main.dashboard') }}" class="btn-action btn-secondary">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Back to Dashboard
+        </a>
+        <a href="{{ url_for('preprocessing.preprocessing', video_id=video.id) }}" class="btn-action btn-process">
+            Extract Audio
         </a>
     </div>
 
