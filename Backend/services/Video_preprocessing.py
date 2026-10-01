@@ -5,6 +5,7 @@ import subprocess  # for ffmpeg
 from flask import Blueprint, jsonify, session
 
 from Backend.extensions import db
+from Backend.services.chunk import chunks
 from Backend.models.Transcript import Transcript
 from Backend.models.videos import Video
 from Backend.services.Transcribe import SpeechToText
@@ -33,6 +34,8 @@ def preprocessing(video_id):
         
         audio_path = extract_audio(absolute_path)
         transcript = SpeechToText(audio_path)
+        Chunks = chunks(transcript)
+
         # saving the data in to database(audio to text data save)
         for segment in transcript:
             obj = Transcript(
