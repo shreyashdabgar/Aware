@@ -2,3 +2,5 @@ flask
 flask-sqlalchemy
 uuid 
 faster-whisper
+ollama
+chromadb

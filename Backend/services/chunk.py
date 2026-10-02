@@ -1,3 +1,6 @@
+import ollama
+
+
 def chunks(transcript):
     try:
         max_chars = 1000
@@ -40,9 +43,26 @@ def chunks(transcript):
 
         # Add remaining chunk
         if current_chunk:
-            chunks.append(current_chunk)
+            chunks.append({
+                'text': ' '.join(segment[0] for segment in current_chunk),
+                'start_time': current_start,
+                'end_time': current_end
+            })
         return chunks
 
     except Exception as e:
         print("There is an error in chunks:", e)
-        return []
+
+
+def Embeddings(chunks):
+    try :
+        model = ollama.embed(
+            model="nomic-embed-text",
+            input=[i['text'] for i in chunks]# giving the text of each chunk in list formet only
+        )
+
+
+        return model['embeddings']
+    
+    except Exception as e :
+        print("There is an error in Embeddings:",e)
