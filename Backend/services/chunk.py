@@ -66,3 +66,19 @@ def Embeddings(chunks):
     
     except Exception as e :
         print("There is an error in Embeddings:",e)
+
+
+# '''Question embedding can convert Question into embeddings for similarity search.'''
+
+def question_embedding(question):
+    try:
+        model= ollama.embed(
+            model= "nomic-embed-text",
+            input = question
+        )
+        
+        return model['embeddings']
+    
+    except Exception as e:
+        print("There is an error in question_embedding:", e)
+        return False
