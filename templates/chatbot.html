@@ -1,0 +1,1209 @@
+
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+/* =========================================
+   AWARE — VIDEO INTELLIGENCE WORKSPACE
+========================================= */
+
+.video-chat {
+    --bg: #f5f4f1;
+    --surface: #ffffff;
+    --ink: #20202b;
+    --muted: #888795;
+    --line: #eae9ed;
+    --accent: #7565dc;
+    --accent-light: #f0edff;
+    --dark: #191824;
+
+    max-width: 1440px;
+    min-height: 720px;
+    margin: 28px auto;
+    padding: 0 28px 28px;
+    color: var(--ink);
+    font-family: inherit;
+}
+
+.video-chat *,
+.video-chat *::before,
+.video-chat *::after {
+    box-sizing: border-box;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: 310px minmax(0, 1fr);
+    min-height: 740px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid #e8e6eb;
+    border-radius: 22px;
+    box-shadow: 0 20px 70px rgba(29, 26, 48, .07);
+}
+
+/* SIDEBAR */
+
+.workspace-sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 24px;
+    background: #faf9f8;
+    border-right: 1px solid var(--line);
+}
+
+.aware-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+}
+
+.aware-symbol {
+    display: grid;
+    width: 39px;
+    height: 39px;
+    place-items: center;
+    color: white;
+    background: var(--dark);
+    border-radius: 13px;
+    font-size: 22px;
+}
+
+.aware-brand-name {
+    font-size: 19px;
+    font-weight: 750;
+    letter-spacing: -.8px;
+}
+
+.aware-brand-subtitle {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.sidebar-label {
+    margin-bottom: 13px;
+    color: #a09eaa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.video-context-card {
+    padding: 13px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+}
+
+.video-art {
+    position: relative;
+    display: grid;
+    height: 145px;
+    place-items: center;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 75% 20%, rgba(146, 124, 255, .38), transparent 38%),
+        linear-gradient(135deg, #27243b, #494168 65%, #29263d);
+    border-radius: 10px;
+}
+
+.video-art::before,
+.video-art::after {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 50%;
+    content: "";
+}
+
+.video-art::after {
+    width: 125px;
+    height: 125px;
+}
+
+.video-play {
+    z-index: 1;
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    padding-left: 3px;
+    color: white;
+    background: rgba(255,255,255,.17);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    font-size: 17px;
+}
+
+.video-context-info {
+    padding: 14px 3px 4px;
+}
+
+.video-context-info h2 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.video-context-info p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.context-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 15px;
+    padding-top: 13px;
+    border-top: 1px solid var(--line);
+    color: #6e6b7c;
+    font-size: 11px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    background: #39b58c;
+    border-radius: 50%;
+}
+
+.sidebar-divider {
+    height: 1px;
+    margin: 28px 0;
+    background: var(--line);
+}
+
+.sidebar-feature {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 19px;
+}
+
+.feature-icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    place-items: center;
+    color: var(--accent);
+    background: var(--accent-light);
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.feature-text strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.feature-text p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 25px;
+}
+
+.sidebar-bottom p {
+    margin: 0;
+    color: #92909b;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.sidebar-bottom strong {
+    color: #5f5c6d;
+}
+
+/* MAIN CHAT */
+
+.chat-main {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    background: #fff;
+}
+
+.chat-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 88px;
+    padding: 20px 34px;
+    border-bottom: 1px solid var(--line);
+}
+
+.chat-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.assistant-avatar {
+    display: grid;
+    width: 41px;
+    height: 41px;
+    place-items: center;
+    color: white;
+    background: linear-gradient(145deg, #8e80ef, #6353bc);
+    border-radius: 13px;
+    font-size: 19px;
+    box-shadow: 0 5px 15px rgba(117,101,220,.2);
+}
+
+.chat-heading h1 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.3px;
+}
+
+.chat-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.ai-indicator {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    color: #4b967b;
+    background: #f0faf5;
+    border: 1px solid #e1f1e8;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 650;
+}
+
+.ai-indicator span {
+    width: 6px;
+    height: 6px;
+    background: #39b58c;
+    border-radius: 50%;
+}
+
+/* MESSAGES */
+
+.chat-messages {
+    display: flex;
+    flex: 1;
+    min-height: 440px;
+    flex-direction: column;
+    gap: 25px;
+    padding: 34px clamp(20px, 5vw, 65px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #e3e0e9;
+    border-radius: 10px;
+}
+
+.welcome-panel {
+    max-width: 570px;
+    margin: 25px auto 15px;
+    text-align: center;
+}
+
+.welcome-orbit {
+    position: relative;
+    display: grid;
+    width: 76px;
+    height: 76px;
+    place-items: center;
+    margin: 0 auto 23px;
+    color: var(--accent);
+    background: #f1efff;
+    border: 1px solid #e9e5ff;
+    border-radius: 25px;
+    font-size: 33px;
+}
+
+.welcome-orbit::after {
+    position: absolute;
+    inset: -7px;
+    border: 1px solid #efedfa;
+    border-radius: 29px;
+    content: "";
+}
+
+.welcome-panel h2 {
+    margin: 0 0 10px;
+    font-size: clamp(22px, 3vw, 29px);
+    font-weight: 700;
+    letter-spacing: -1.1px;
+}
+
+.welcome-panel > p {
+    max-width: 390px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.suggestion-title {
+    margin: 29px 0 12px;
+    color: #aaa7b1;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+}
+
+.suggestion {
+    padding: 10px 14px;
+    color: #625e76;
+    background: #faf9fc;
+    border: 1px solid #eceaf1;
+    border-radius: 9px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+    transition: .2s ease;
+}
+
+.suggestion:hover {
+    color: var(--accent);
+    background: var(--accent-light);
+    border-color: #dcd6ff;
+    transform: translateY(-2px);
+}
+
+.chat-message {
+    display: flex;
+    max-width: 85%;
+    gap: 11px;
+    animation: message-in .25s ease;
+}
+
+@keyframes message-in {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    display: grid;
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+    place-items: center;
+    color: white;
+    background: #7565dc;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.chat-message.assistant .message-avatar {
+    background: #262437;
+}
+
+.message-content {
+    min-width: 0;
+}
+
+.message-author {
+    margin: 0 0 6px;
+    color: #9996a3;
+    font-size: 10px;
+    font-weight: 650;
+}
+
+.chat-message.user .message-author {
+    text-align: right;
+}
+
+.message-bubble {
+    padding: 13px 16px;
+    color: #454252;
+    background: #f7f6f9;
+    border: 1px solid #efedf2;
+    border-radius: 4px 15px 15px 15px;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.chat-message.user .message-bubble {
+    color: white;
+    background: #7565dc;
+    border-color: #7565dc;
+    border-radius: 15px 4px 15px 15px;
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    padding: 15px 17px;
+    background: #f7f6f9;
+    border: 1px solid #efedf2;
+    border-radius: 4px 15px 15px 15px;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: #9892ba;
+    border-radius: 50%;
+    animation: typing 1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: .15s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: .3s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        opacity: .35;
+        transform: translateY(0);
+    }
+    30% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+/* INPUT */
+
+.chat-composer-area {
+    padding: 18px clamp(20px, 5vw, 65px) 25px;
+    border-top: 1px solid var(--line);
+    background: #fff;
+}
+
+.chat-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 11px 11px 11px 18px;
+    background: #faf9fb;
+    border: 1px solid #e9e6ee;
+    border-radius: 15px;
+    transition: .2s ease;
+}
+
+.chat-form:focus-within {
+    background: #fff;
+    border-color: #b8aff7;
+    box-shadow: 0 0 0 4px rgba(117,101,220,.07);
+}
+
+.chat-form textarea {
+    width: 100%;
+    min-height: 27px;
+    max-height: 120px;
+    resize: none;
+    border: 0;
+    outline: none;
+    color: var(--ink);
+    background: transparent;
+    font: inherit;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.chat-form textarea::placeholder {
+    color: #aaa7b2;
+}
+
+.send-button {
+    display: grid;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    place-items: center;
+    color: white;
+    background: #7565dc;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: .2s ease;
+}
+
+.send-button:hover {
+    background: #6353c4;
+    transform: translateY(-2px);
+}
+
+.send-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.composer-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 11px;
+    color: #aaa7b2;
+    font-size: 10px;
+}
+
+.composer-footer strong {
+    color: #777386;
+    font-weight: 600;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+    .video-chat {
+        padding: 0 12px 15px;
+    }
+
+    .workspace {
+        grid-template-columns: 230px minmax(0, 1fr);
+    }
+
+    .workspace-sidebar {
+        padding: 23px 16px;
+    }
+
+    .chat-topbar {
+        padding: 18px;
+    }
+
+    .chat-messages {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .video-chat {
+        margin: 12px auto;
+        padding: 0 8px;
+    }
+
+    .workspace {
+        display: flex;
+        min-height: 80vh;
+        flex-direction: column;
+        border-radius: 16px;
+    }
+
+    .workspace-sidebar {
+        padding: 13px 15px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .aware-brand {
+        margin-bottom: 13px;
+    }
+
+    .video-art {
+        display: none;
+    }
+
+    .video-context-card {
+        padding: 10px;
+    }
+
+    .video-context-info {
+        padding: 0;
+    }
+
+    .sidebar-divider,
+    .sidebar-feature,
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .sidebar-label {
+        margin-bottom: 8px;
+    }
+
+    .chat-main {
+        min-height: 570px;
+    }
+
+    .chat-topbar {
+        min-height: 75px;
+        padding: 14px;
+    }
+
+    .ai-indicator {
+        padding: 7px 9px;
+    }
+
+    .chat-messages {
+        padding: 23px 14px;
+    }
+
+    .chat-message {
+        max-width: 94%;
+    }
+
+    .chat-composer-area {
+        padding: 13px 13px 18px;
+    }
+
+    .composer-footer {
+        font-size: 9px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .video-chat *,
+    .video-chat *::before,
+    .video-chat *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+
+
+<main class="video-chat">
+
+    <section class="workspace">
+
+        <!-- SIDEBAR -->
+
+        <aside class="workspace-sidebar">
+
+            <div class="aware-brand">
+                <span class="aware-symbol">✳</span>
+
+                <div>
+                    <div class="aware-brand-name">aware</div>
+                    <div class="aware-brand-subtitle">
+                        Video intelligence
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="sidebar-label">Your workspace</div>
+
+            <div class="video-context-card">
+
+                <div class="video-art">
+                    <span class="video-play">▶</span>
+                </div>
+
+                <div class="video-context-info">
+
+                    <h2>{{ video_title or "Your uploaded video" }}</h2>
+
+                    <p>
+                        Your conversation is connected to this video's content.
+                    </p>
+
+                    <div class="context-status">
+                        <span class="status-dot"></span>
+                        Video context active
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-label">What you can do</div>
+
+            <div class="sidebar-feature">
+
+                <div class="feature-icon">⌕</div>
+
+                <div class="feature-text">
+                    <strong>Explore ideas</strong>
+                    <p>Understand concepts discussed in the video.</p>
+                </div>
+
+            </div>
+
+            <div class="sidebar-feature">
+
+                <div class="feature-icon">◷</div>
+
+                <div class="feature-text">
+                    <strong>Find key moments</strong>
+                    <p>Ask about specific topics and explanations.</p>
+                </div>
+
+            </div>
+
+            <div class="sidebar-feature">
+
+                <div class="feature-icon">✧</div>
+
+                <div class="feature-text">
+                    <strong>Learn something new</strong>
+                    <p>Get answers based on the video's content.</p>
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+                <p>
+                    <strong>Think beyond watching.</strong><br>
+                    Understand what matters.
+                </p>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CHAT -->
+
+        <section class="chat-main">
+
+            <header class="chat-topbar">
+
+                <div class="chat-heading">
+
+                    <div class="assistant-avatar">✳</div>
+
+                    <div>
+                        <h1>Video companion</h1>
+                        <p>Your video, understood differently.</p>
+                    </div>
+
+                </div>
+
+                <div class="ai-indicator">
+                    <span></span>
+                    AI ready
+                </div>
+
+            </header>
+
+
+            <!-- MESSAGE AREA -->
+
+            <div
+                class="chat-messages"
+                id="chat-messages"
+                data-video-id="{{ video_id }}"
+                aria-live="polite"
+                aria-relevant="additions"
+            >
+
+                <div class="welcome-panel" id="welcome-panel">
+
+                    <div class="welcome-orbit">✳</div>
+
+                    <h2>Let's make sense of it.</h2>
+
+                    <p>
+                        I've got your video context ready.
+                        Ask me anything about its ideas, explanations
+                        or important details.
+                    </p>
+
+                    <div class="suggestion-title">
+                        A few places to start
+                    </div>
+
+                    <div class="suggestions">
+
+                        <button class="suggestion" type="button">
+                            Summarize this video
+                        </button>
+
+                        <button class="suggestion" type="button">
+                            Explain the main concept
+                        </button>
+
+                        <button class="suggestion" type="button">
+                            What are the key takeaways?
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                {% for message in messages|default([]) %}
+
+                    <div class="chat-message {{ message.role }}">
+
+                        <div class="message-avatar">
+                            {% if message.role == "user" %}
+                                Y
+                            {% else %}
+                                ✳
+                            {% endif %}
+                        </div>
+
+                        <div class="message-content">
+
+                            <div class="message-author">
+                                {% if message.role == "user" %}
+                                    You
+                                {% else %}
+                                    Aware
+                                {% endif %}
+                            </div>
+
+                            <div class="message-bubble">{{ message.content }}</div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- INPUT AREA -->
+
+            <div class="chat-composer-area">
+
+                <form class="chat-form" id="chat-form">
+
+                    <textarea
+                        name="question"
+                        id="question"
+                        rows="1"
+                        maxlength="2000"
+                        placeholder="Ask anything about this video..."
+                        aria-label="Write your question"
+                        required
+                    ></textarea>
+
+                    <button
+                        class="send-button"
+                        id="send-button"
+                        type="submit"
+                        aria-label="Send message"
+                    >
+                        ↑
+                    </button>
+
+                </form>
+
+
+                <div class="composer-footer">
+
+                    <span>
+                        <strong>Enter</strong> to send ·
+                        <strong>Shift + Enter</strong> for a new line
+                    </span>
+
+                    <span>Powered by Aware AI</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<script>
+(() => {
+
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("question");
+    const messages = document.getElementById("chat-messages");
+    const sendButton = document.getElementById("send-button");
+    const welcomePanel = document.getElementById("welcome-panel");
+
+    if (!form || !input || !messages || !sendButton) return;
+
+    const videoId = messages.dataset.videoId;
+
+    let isSending = false;
+
+
+    // Scroll to latest message
+
+    function scrollToBottom() {
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    scrollToBottom();
+
+
+    // Create message safely
+
+    function addMessage(role, content) {
+
+        if (welcomePanel && welcomePanel.isConnected) {
+            welcomePanel.remove();
+        }
+
+        const message = document.createElement("div");
+        message.className = `chat-message ${role}`;
+
+        const avatar = document.createElement("div");
+        avatar.className = "message-avatar";
+        avatar.textContent = role === "user" ? "Y" : "✳";
+
+        const messageContent = document.createElement("div");
+        messageContent.className = "message-content";
+
+        const author = document.createElement("div");
+        author.className = "message-author";
+        author.textContent = role === "user" ? "You" : "Aware";
+
+        const bubble = document.createElement("div");
+        bubble.className = "message-bubble";
+
+        // textContent prevents HTML/script injection.
+        bubble.textContent = content;
+
+        messageContent.append(author, bubble);
+        message.append(avatar, messageContent);
+
+        messages.appendChild(message);
+
+        scrollToBottom();
+
+        return message;
+    }
+
+
+    // Typing indicator
+
+    function showTyping() {
+
+        const typingMessage = document.createElement("div");
+        typingMessage.className = "chat-message assistant";
+        typingMessage.id = "typing-message";
+
+        const avatar = document.createElement("div");
+        avatar.className = "message-avatar";
+        avatar.textContent = "✳";
+
+        const content = document.createElement("div");
+        content.className = "message-content";
+
+        const author = document.createElement("div");
+        author.className = "message-author";
+        author.textContent = "Aware is thinking";
+
+        const indicator = document.createElement("div");
+        indicator.className = "typing-indicator";
+
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement("span");
+            indicator.appendChild(dot);
+        }
+
+        content.append(author, indicator);
+        typingMessage.append(avatar, content);
+
+        messages.appendChild(typingMessage);
+
+        scrollToBottom();
+    }
+
+
+    function removeTyping() {
+        const typing = document.getElementById("typing-message");
+
+        if (typing) {
+            typing.remove();
+        }
+    }
+
+
+    // Send question to Flask
+
+    async function sendQuestion(question) {
+
+        if (isSending || !question.trim()) return;
+
+        isSending = true;
+        sendButton.disabled = true;
+        input.disabled = true;
+
+        addMessage("user", question);
+        showTyping();
+
+        try {
+
+            const formData = new FormData();
+
+            formData.append("question", question);
+
+            const response = await fetch(
+                `/chatbot/${encodeURIComponent(videoId)}`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const contentType = response.headers.get("content-type") || "";
+
+            let result;
+
+            if (contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                result = await response.text();
+            }
+
+            removeTyping();
+
+            if (!response.ok) {
+
+                const errorMessage =
+                    typeof result === "object"
+                        ? result.error || "Something went wrong."
+                        : result || "Something went wrong.";
+
+                addMessage("assistant", errorMessage);
+
+            } else {
+
+                const answer =
+                    typeof result === "object"
+                        ? result.answer ?? result.error ?? "No answer received."
+                        : result;
+
+                addMessage("assistant", String(answer));
+
+            }
+
+        } catch (error) {
+
+            removeTyping();
+
+            console.error("Chat error:", error);
+
+            addMessage(
+                "assistant",
+                "I couldn't connect to Aware right now. Please try again."
+            );
+
+        } finally {
+
+            isSending = false;
+            sendButton.disabled = false;
+            input.disabled = false;
+            input.focus();
+
+        }
+
+    }
+
+
+    // Form submission
+
+    form.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const question = input.value.trim();
+
+        if (!question || isSending) return;
+
+        input.value = "";
+        input.style.height = "auto";
+
+        await sendQuestion(question);
+
+    });
+
+
+    // Enter sends, Shift + Enter creates a new line
+
+    input.addEventListener("keydown", (event) => {
+
+        if (event.key === "Enter" && !event.shiftKey) {
+
+            event.preventDefault();
+
+            if (form.requestSubmit) {
+                form.requestSubmit();
+            }
+
+        }
+
+    });
+
+
+    // Automatically expand textarea
+
+    input.addEventListener("input", () => {
+
+        input.style.height = "auto";
+
+        input.style.height =
+            Math.min(input.scrollHeight, 120) + "px";
+
+    });
+
+
+    // Suggestion buttons
+
+    document.querySelectorAll(".suggestion").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            input.value = button.textContent.trim();
+            form.requestSubmit();
+
+        });
+
+    });
+
+})();
+</script>
+
+{% endblock %}

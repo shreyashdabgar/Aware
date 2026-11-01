@@ -6,6 +6,7 @@ from Backend.routes.auth import auth_bp
 from Backend.routes.main import main_bp
 from Backend.services.Video_preprocessing import preprocessing_bp
 from Backend.services.Transcribe import Transcribe_bp
+from Backend.routes.Chatbot import chatbot_bp
 from datetime import timedelta
 
 
@@ -14,6 +15,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
 app.register_blueprint(preprocessing_bp)
 app.register_blueprint(Transcribe_bp)
+app.register_blueprint(chatbot_bp)
 app.config['SECRET_KEY'] = 'some-secret-value'#session key for security
 app.config["PERMENENT_SESSION_LIFETIME"] = timedelta(minutes=30)#seting the time of session 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
@@ -29,4 +31,4 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True, use_reloader=False)

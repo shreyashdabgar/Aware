@@ -4,3 +4,4 @@ uuid
 faster-whisper
 ollama
 chromadb
+lingua-language-detector

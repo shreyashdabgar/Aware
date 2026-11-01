@@ -175,6 +175,10 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Back to Dashboard
         </a>
+        <a href="{{ url_for('chatbot.chatbot', video_id=video.id) }}"
+           class="btn-action btn-secondary">
+            Ask AI
+        </a>
         <a href="{{ url_for('preprocessing.preprocessing', video_id=video.id) }}" class="btn-action btn-process">
             Extract Audio
         </a>

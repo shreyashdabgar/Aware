@@ -1,39 +1,51 @@
+import time
 import ollama
+
+
+MODEL_NAME = "nomic-embed-text"
 
 
 def chunks(transcript):
     try:
         max_chars = 1000
 
-        chunks = []
+        result_chunks = []
         current_chunk = []
         current_len = 0
+
         current_start = 0.0
         current_end = 0.0
 
-        for i in transcript:
-            Text = i['text']
-            Start = i['start']
-            End = i['end']
+        for segment in transcript:
+            text = segment["text"]
+            start = segment["start"]
+            end = segment["end"]
+            semantic_text = segment["semantic_text"]
 
-            # First segment of a new chunk
-            if not current_chunk:# check that current chunk is empty
-                current_start = Start
+            if not current_chunk:
+                current_start = start
 
-            # Every segment updates the latest end time
-            current_end = End
+            current_end = end
 
-            current_chunk.append([Text, Start, End])
+            current_chunk.append({
+                "text": text,
+                "start": start,
+                "end": end,
+                "semantic_text": semantic_text
+            })
 
-            length = len(Text)
-            current_len += length
+            current_len += len(semantic_text)
 
-            # Chunk is complete
             if current_len >= max_chars:
-                chunks.append({
-                    'text': ' '.join(segment[0] for segment in current_chunk),
-                    'start_time': current_start,
-                    'end_time': current_end
+                result_chunks.append({
+                    "text": " ".join(
+                        item["text"] for item in current_chunk
+                    ),
+                    "semantic_text": " ".join(
+                        item["semantic_text"] for item in current_chunk
+                    ),
+                    "start_time": current_start,
+                    "end_time": current_end
                 })
 
                 current_chunk = []
@@ -41,44 +53,96 @@ def chunks(transcript):
                 current_start = 0.0
                 current_end = 0.0
 
-        # Add remaining chunk
+        # Add remaining segments
         if current_chunk:
-            chunks.append({
-                'text': ' '.join(segment[0] for segment in current_chunk),
-                'start_time': current_start,
-                'end_time': current_end
+            result_chunks.append({
+                "text": " ".join(
+                    item["text"] for item in current_chunk
+                ),
+                "semantic_text": " ".join(
+                    item["semantic_text"] for item in current_chunk
+                ),
+                "start_time": current_start,
+                "end_time": current_end
             })
-        return chunks
+
+        return result_chunks
 
     except Exception as e:
-        print("There is an error in chunks:", e)
+        print("Chunking error:", repr(e))
+        raise
 
 
-def Embeddings(chunks):
-    try :
-        model = ollama.embed(
-            model="nomic-embed-text",
-            input=[i['text'] for i in chunks]# giving the text of each chunk in list formet only
+def Embeddings(chunks_list):
+    """
+    Generate embeddings for video chunks.
+    Uses Ollama's default GPU placement.
+    """
+
+    try:
+        if not chunks_list:
+            return []
+
+        start_time = time.perf_counter()
+
+        response = ollama.embed(
+            model=MODEL_NAME,
+            input=[
+                item["semantic_text"]
+                for item in chunks_list
+            ],
+            keep_alive="10m"
         )
 
+        embeddings = response["embeddings"]
 
-        return model['embeddings']
-    
-    except Exception as e :
-        print("There is an error in Embeddings:",e)
+        elapsed = time.perf_counter() - start_time
 
+        print(
+            f"Video embeddings (GPU): {elapsed:.2f} seconds"
+        )
 
-# '''Question embedding can convert Question into embeddings for similarity search.'''
+        return embeddings
+
+    except Exception as e:
+        print("Video Embeddings error:", repr(e))
+        raise
+
 
 def question_embedding(question):
+    """
+    Generate the user's question embedding.
+    Requests CPU placement to reduce GPU memory contention
+    with the Qwen answer-generation model.
+    """
+
     try:
-        model= ollama.embed(
-            model= "nomic-embed-text",
-            input = question
+        start_time = time.perf_counter()
+
+        response = ollama.embed(
+            model=MODEL_NAME,
+            input=question,
+            options={
+                "num_gpu": 0
+            },
+            keep_alive="10m"
         )
-        
-        return model['embeddings']
-    
+
+        embeddings = response["embeddings"]
+
+        elapsed = time.perf_counter() - start_time
+
+        print(
+            f"Question embedding (CPU): {elapsed:.2f} seconds"
+        )
+
+        if not embeddings:
+            raise RuntimeError(
+                "Ollama returned an empty question embedding."
+            )
+
+        return embeddings
+
     except Exception as e:
-        print("There is an error in question_embedding:", e)
-        return False
+        print("Question embedding error:", repr(e))
+        raise
