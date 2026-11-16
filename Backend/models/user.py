@@ -6,3 +6,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     name = db.Column(db.String(80), nullable=False)
     videos = db.relationship('Video', backref='owner', lazy=True)
+    conversations = db.relationship(
+    "Conversation",
+    back_populates="user",
+    cascade="all, delete-orphan"
+    )

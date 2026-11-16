@@ -5,12 +5,14 @@ from lingua import Language, LanguageDetectorBuilder
 
 
 
-def llm(prompt: dict, mode="answer"):
+def llm(prompt: dict, mode="answer", history=None):
     try:
         start = time.perf_counter()
+        history = history or []
 
         if mode == "classify":
             response = ollama.chat(
+                *history,
                 model="qwen2.5:3b",
                 messages=[
                     {
@@ -39,6 +41,7 @@ def llm(prompt: dict, mode="answer"):
 
         elif mode == "general":
             response = ollama.chat(
+                *history,
                 model="qwen2.5:3b",
                 messages=[
                     {
@@ -65,6 +68,7 @@ def llm(prompt: dict, mode="answer"):
 
         elif mode == "answer":
             response = ollama.chat(
+                *history,
                 model="qwen2.5:3b",
                 messages=[
                     {

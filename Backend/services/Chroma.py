@@ -91,14 +91,14 @@ def is_general_message(question):
     return question.strip().lower().rstrip("!.?") in general_messages
 
 
-def ask_question(question, video_id):
+def ask_question(question, video_id,conversation_history=None):
     try:
+        conversation_history = conversation_history or []
         start = time.perf_counter()
-
         # STEP 1: Handle obvious general conversation
         if is_general_message(question):
             return llm(
-                {"question": question},
+                {"question": question, "history": conversation_history},
                 mode="general"
             )
 
@@ -118,10 +118,11 @@ def ask_question(question, video_id):
 
         prompt = {
             "context": context,
-            "question": question
+            "question": question,
+            "history": conversation_history
         }
 
-        llm_response = llm(prompt, mode="answer")
+        llm_response = llm(prompt, mode="answer", history= conversation_history)
 
         llm_time = time.perf_counter() - llm_start
         total_time = time.perf_counter() - start
