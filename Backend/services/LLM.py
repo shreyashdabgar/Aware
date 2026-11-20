@@ -23,8 +23,6 @@ def llm(prompt: dict, mode="answer", history=None):
                             "small talk, gratitude, or farewells. "
                             "Return only 'video' for questions or "
                             "requests about the uploaded video. "
-                            "If uncertain, return 'video'. "
-                            "Do not explain."
                         )
                     },
                     {
@@ -41,7 +39,6 @@ def llm(prompt: dict, mode="answer", history=None):
 
         elif mode == "general":
             response = ollama.chat(
-                *history,
                 model="qwen2.5:3b",
                 messages=[
                     {
@@ -51,9 +48,9 @@ def llm(prompt: dict, mode="answer", history=None):
                             "Respond naturally and warmly to greetings, "
                             "thanks, small talk, and farewells. "
                             "Keep replies concise. "
-                            "Do not pretend to have feelings or experiences."
                         )
                     },
+                    *history,
                     {
                         "role": "user",
                         "content": prompt["question"]
@@ -68,7 +65,6 @@ def llm(prompt: dict, mode="answer", history=None):
 
         elif mode == "answer":
             response = ollama.chat(
-                *history,
                 model="qwen2.5:3b",
                 messages=[
                     {
@@ -76,14 +72,12 @@ def llm(prompt: dict, mode="answer", history=None):
                         "content": (
                             "You are a helpful assistant answering questions about a video. "
                             "Use ONLY the provided context as your source of truth. "
-                            "Do not use outside knowledge or make assumptions. "
                             "If the context contains an explicit statement that answers "
                             "the question, follow it exactly. "
-                            "If the answer cannot be determined from the context, "
-                            "say 'I don't know'. "
                             "Answer clearly and concisely in a maximum of 2-3 sentences."
                         )
                     },
+                    *history,
                     {
                         "role": "user",
                         "content": (

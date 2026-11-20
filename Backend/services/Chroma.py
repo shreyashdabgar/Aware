@@ -98,8 +98,9 @@ def ask_question(question, video_id,conversation_history=None):
         # STEP 1: Handle obvious general conversation
         if is_general_message(question):
             return llm(
-                {"question": question, "history": conversation_history},
-                mode="general"
+                {"question": question},
+                mode="general",
+                history=conversation_history,
             )
 
         # STEP 2: Retrieve video context

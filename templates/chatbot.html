@@ -732,7 +732,18 @@
             <div class="video-context-card">
 
                 <div class="video-art">
-                    <span class="video-play">▶</span>
+                    <video
+                        controls
+                        controlslist="nodownload"
+                        poster="{{ video.thumbnail_url or '' }}"
+                        style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; background: #000; border-radius: 10px;"
+                    >
+                        <source
+                            src="{{ url_for('main.video_file', video_id=video.id) if video.file_name else video.url }}"
+                            type="video/mp4"
+                        >
+                        Your browser does not support playing HTML5 videos.
+                    </video>
                 </div>
 
                 <div class="video-context-info">
@@ -837,6 +848,7 @@
             >
 
                 <div class="welcome-panel" id="welcome-panel">
+                    {% if not messages %}
 
                     <div class="welcome-orbit">✳</div>
 
@@ -869,6 +881,7 @@
                     </div>
 
                 </div>
+                {% endif %}
 
 
                 {% for message in messages|default([]) %}

@@ -1,9 +1,10 @@
-from flask import render_template,redirect,session,Blueprint,jsonify,request,url_for
+from flask import render_template,redirect,session,Blueprint,jsonify,request,url_for,send_from_directory
 from Backend.services.Chroma import ask_question,store_chunks,serching_chunks
 from Backend.models.videos import Video
 from Backend.models.Conversation import Conversation
 from Backend.models.Messages import Message
 from Backend.extensions import db
+import os
 
 chatbot_bp = Blueprint('chatbot', __name__)
 
@@ -16,10 +17,11 @@ def chatbot(video_id):
             return redirect(url_for('auth.login'))  # Redirect to login if user is not logged in
 
         #varify this video_id is belong to this user or not
-        videos = Video.query.filter_by(id= video_id, user_id = user_id).first()
+        video = Video.query.filter_by(id= video_id, user_id = user_id).first()
 
-        if not videos:
+        if not video:
             return redirect(url_for('auth.login'))  # Redirect to login if user is not logged in
+
 
         #find the existing conversation for this user for this perticular video
         conversation = Conversation.query.filter_by(video_id = video_id , user_id = user_id).first()
@@ -30,7 +32,7 @@ def chatbot(video_id):
         if not conversation:
             conversation = Conversation(user_id = user_id,
                                         video_id = video_id,
-                                        title = videos.title,
+                                        title = video.title,
                                         )
 
             db.session.add(conversation)
@@ -68,9 +70,9 @@ def chatbot(video_id):
             db.session.commit()
             
             return llm_response
-
         
-        return render_template("chatbot.html",video_id = video_id)
+
+        return render_template("chatbot.html",video_id = video_id, messages = Message.query.filter_by(conversation_id = conversation.id).all(), video = video)
     
     except Exception as e :
         print("there is an error in chatbot route", e)
